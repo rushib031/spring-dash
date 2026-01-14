@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>VulnScan Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <h1>Vulnerability Management Dashboard</h1>
+            
+    <div class="search-container">
+        <input type="text" id="severitySearch" placeholder="Search by Severity (e.g. Critical)...">
+        <button onclick="searchBySeverity()">Search</button>
+        <button onclick="resetTable()" class="reset-btn">Reset</button>
+    </div>
+
+    <div class="form-container">
+        <h3>Log New Vulnerability</h3>
+        <div class="input-group">
+            <input type="text" id="newCveId" placeholder="CVE ID (e.g., CVE-2026-101)">
+            <input type="text" id="newTitle" placeholder="Title (e.g., Buffer Overflow)">
+            <select id="newSeverity">
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+                <option value="Critical">Critical</option>
+            </select>
+            <button onclick="addVulnerability()">Add to Log</button>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>CVE ID</th>
+                <th>Title</th>
+                <th>Severity</th>
+                <th>Actions</th> </tr>
+        </thead>
+        <tbody>
+            <tr th:each="vuln : ${vulnerabilities}" th:id="'row-' + ${vuln.id}">
+                <td th:text="${vuln.id}"></td>
+                <td th:text="${vuln.cveId}"></td>
+                <td th:text="${vuln.title}"></td>
+                <td th:class="${vuln.severity}" th:text="${vuln.severity}"></td>
+                <td>
+                    <button class="delete-btn" th:onclick="'deleteVuln(' + ${vuln.id} + ')'">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script th:src="@{/js/dashboard.js}"></script>
+</body>
+</html>
