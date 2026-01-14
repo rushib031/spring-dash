@@ -14,18 +14,26 @@ function addVulnerability() {
 
     fetch('/api/vulnerabilities', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(vulnData)
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(vulnData),
+        credentials: 'same-origin' 
     })
-    .then(response => response.json())
+    .then(response => {
+        if (response.status === 403) {
+            alert("Access Denied: You must be logged in as an ADMIN to add vulnerabilities.");
+            throw new Error("Forbidden");
+        }
+        if (response.status === 429) {
+            alert("Rate limit exceeded! Please wait.");
+            throw new Error("Rate Limited");
+        }
+        if (!response.ok) return response.text().then(text => { throw new Error(text) });
+        return response.json();
+    })
     .then(data => {
-        // Refresh the page to show the new entry, 
-        // or you could dynamically append it to the table like we did with search
         location.reload(); 
     })
-    .catch(error => console.error('Error adding vulnerability:', error));
+    .catch(error => console.error('Error:', error));
 }
 
 function searchBySeverity() {
@@ -82,4 +90,20 @@ function resetTable() {
             alert("An error occurred while trying to delete.");
         });
     }
+}
+
+function postNote() {
+    const noteContent = document.getElementById('adminNote').value;
+    if (!noteContent) return;
+
+    fetch('/api/notes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: noteContent }),
+        credentials: 'same-origin'
+    })
+    .then(response => {
+        if (response.ok) location.reload();
+        else alert("Unauthorized: Only Admins can post briefings.");
+    });
 }

@@ -1,11 +1,39 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>VulnScan Dashboard</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-    <h1>Vulnerability Management Dashboard</h1>
+    <div class="notes-section" style="background: #1a1a1a; padding: 20px; border-bottom: 2px solid #00ff41; margin-bottom: 20px;">
+        <h2 style="color: #00ff41; margin-top: 0;">🛡️ Security Analyst Briefing</h2>
+        
+        <div id="notesDisplay">
+            <p th:each="note : ${notes}" style="border-left: 3px solid #00ff41; padding-left: 15px; margin-bottom: 10px;">
+                <span th:text="${note.content}">Note content goes here...</span>
+            </p>
+        </div>
+
+        <div sec:authorize="hasRole('ADMIN')" style="margin-top: 15px;">
+            <input type="text" id="adminNote" placeholder="Broadcast a security update..." 
+                style="width: 70%; padding: 8px; background: #333; color: white; border: 1px solid #444;">
+            <button onclick="postNote()" style="padding: 8px 20px; background: #00ff41; color: black; font-weight: bold; border: none; cursor: pointer;">
+                Post Briefing
+            </button>
+        </div>
+    </div>    
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h1>Vulnerability Management Dashboard</h1>
+        
+        <nav>
+            <span sec:authorize="isAuthenticated()">
+                Welcome, <strong th:text="${#authentication.name}"></strong> | 
+                <a th:href="@{/logout}" style="color: #ff4d4d;">Logout</a>
+            </span>
+            <a sec:authorize="isAnonymous()" th:href="@{/login}" style="color: #00ff41;">Login</a>
+        </nav>
+    </div>
             
     <div class="search-container">
         <input type="text" id="severitySearch" placeholder="Search by Severity (e.g. Critical)...">
@@ -13,7 +41,7 @@
         <button onclick="resetTable()" class="reset-btn">Reset</button>
     </div>
 
-    <div class="form-container">
+    <div class="form-container" sec:authorize="hasRole('ADMIN')">
         <h3>Log New Vulnerability</h3>
         <div class="input-group">
             <input type="text" id="newCveId" placeholder="CVE ID (e.g., CVE-2026-101)">
@@ -35,7 +63,8 @@
                 <th>CVE ID</th>
                 <th>Title</th>
                 <th>Severity</th>
-                <th>Actions</th> </tr>
+                <th sec:authorize="hasRole('ADMIN')">Actions</th> 
+            </tr>
         </thead>
         <tbody>
             <tr th:each="vuln : ${vulnerabilities}" th:id="'row-' + ${vuln.id}">
@@ -43,7 +72,8 @@
                 <td th:text="${vuln.cveId}"></td>
                 <td th:text="${vuln.title}"></td>
                 <td th:class="${vuln.severity}" th:text="${vuln.severity}"></td>
-                <td>
+                
+                <td sec:authorize="hasRole('ADMIN')">
                     <button class="delete-btn" th:onclick="'deleteVuln(' + ${vuln.id} + ')'">Delete</button>
                 </td>
             </tr>
