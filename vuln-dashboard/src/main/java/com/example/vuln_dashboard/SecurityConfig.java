@@ -46,15 +46,21 @@ public class SecurityConfig {
 
     @Bean
     public InMemoryUserDetailsManager userDetailsService(PasswordEncoder encoder) {
+        String adminPass = System.getenv("ADMIN_PASSWORD") != null 
+                       ? System.getenv("ADMIN_PASSWORD") : "dev-only-pass";
+
+        String analystPass = System.getenv("ANALYST_PASSWORD") != null 
+                       ? System.getenv("ANALYST_PASSWORD") : "password";    
+
         UserDetails admin = User.builder()
             .username("admin")
-            .password(encoder.encode("cyber123"))
+            .password(encoder.encode(adminPass))
             .roles("ADMIN")
             .build();
 
         UserDetails analyst = User.builder()
             .username("analyst")
-            .password(encoder.encode("password"))
+            .password(encoder.encode(analystPass))
             .roles("USER")
             .build();
 
