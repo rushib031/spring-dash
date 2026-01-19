@@ -40,11 +40,9 @@ User/Analyst: Access to /dashboard and search functionality only.
 
 2. Input Integrity
 All data entering the Vulnerability entity is validated at the persistence layer.
-
-Java
-
-@Pattern(regexp = "^CVE-\\d{4}-\\d{3,7}$", message = "Invalid CVE format")
+Java @Pattern(regexp = "^CVE-\\d{4}-\\d{3,7}$", message = "Invalid CVE format")
 private String cveId;
+
 3. Availability Protection
 The RateLimitService restricts the creation of new vulnerabilities to 10 requests per minute per session, mitigating potential Denial-of-Service (DoS) attempts on the database.
 
