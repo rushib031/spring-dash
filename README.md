@@ -1,8 +1,8 @@
 🛡️ VulnScan: Security Management Dashboard
 VulnScan is a full-stack Java Spring Boot application designed to centralize vulnerability tracking with a focus on Defense-in-Depth security principles. This project simulates a Security Operations Center (SOC) dashboard where analysts can monitor and manage CVE entries in real-time.
 
-🌐 [Link to Live Demo on Railway]
-(Replace this with your actual Railway URL once the build is live)
+🌐 [https://spring-dash-production.up.railway.app/dashboard]
+
 
 🚀 Technical Highlights
 This project goes beyond basic CRUD operations by implementing three core security pillars:
